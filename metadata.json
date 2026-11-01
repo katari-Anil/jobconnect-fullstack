@@ -1,0 +1,6 @@
+{
+  "name": "JobConnect",
+  "description": "Full Stack Job Portal & Internship Management System for college students and job seekers developed by Katari Anil.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

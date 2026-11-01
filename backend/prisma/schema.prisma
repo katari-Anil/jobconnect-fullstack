@@ -1,0 +1,99 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  STUDENT
+  ADMIN
+}
+
+enum JobType {
+  FULL_TIME
+  PART_TIME
+  INTERNSHIP
+  REMOTE
+  HYBRID
+}
+
+enum ApplicationStatus {
+  APPLIED
+  UNDER_REVIEW
+  SHORTLISTED
+  INTERVIEW
+  SELECTED
+  REJECTED
+}
+
+model User {
+  id             String        @id @default(uuid())
+  name           String
+  email          String        @unique
+  password       String
+  role           Role          @default(STUDENT)
+  phone          String?
+  college        String?
+  degree         String?
+  branch         String?
+  graduationYear Int?
+  skills         String[]
+  resumeUrl      String?
+  resumeFileName String?
+  github         String?
+  linkedin       String?
+  portfolio      String?
+  bio            String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  applications   Application[]
+
+  @@map("users")
+}
+
+model Job {
+  id           String        @id @default(uuid())
+  title        String
+  company      String
+  companyLogo  String?
+  description  String
+  requirements String[]
+  skills       String[]
+  location     String
+  jobType      JobType       @default(FULL_TIME)
+  salary       String
+  experience   String
+  deadline     DateTime
+  openings     Int           @default(1)
+  category     String        @default("Software Engineering")
+  featured     Boolean       @default(false)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  applications Application[]
+
+  @@map("jobs")
+}
+
+model Application {
+  id             String            @id @default(uuid())
+  userId         String
+  jobId          String
+  resumeUrl      String
+  resumeFileName String
+  coverLetter    String?
+  notes          String?
+  status         ApplicationStatus @default(APPLIED)
+  appliedAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  user           User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  job            Job               @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, jobId])
+  @@map("applications")
+}
